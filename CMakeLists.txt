@@ -17,16 +17,9 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)
 
-set(SOURCECODE ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/MainWindow.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/MainWindow.cpp)
+include(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
 
-#include(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
-
-add_executable(${PROJECT_NAME} ${SOURCECODE} "src/File/STLFile.h" "src/File/STLFile.cpp")
-
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
-
+# set control enbale or disable
 if(WIN32)
 set_target_properties( ${PROJECT_NAME}
     PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"  # show window without console in win32
