@@ -21,7 +21,7 @@ set(SOURCECODE ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/src/MainWindow.cpp)
 
-include(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
+#include(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
 
 add_executable(${PROJECT_NAME} ${SOURCECODE} "src/File/STLFile.h" "src/File/STLFile.cpp")
 
