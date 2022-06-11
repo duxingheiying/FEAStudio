@@ -26,8 +26,8 @@ The CXX compiler identification is MSVC, found in "E:/project/FEAStudio/out/buil
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: E:/project/FEAStudio/out/build/x64-Debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_75194 && [1/2] Building CXX object CMakeFiles\cmTC_75194.dir\CMakeCXXCompilerABI.cpp.obj
-[2/2] Linking CXX executable cmTC_75194.exe
+Run Build Command(s):D:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_2d5d6 && [1/2] Building CXX object CMakeFiles\cmTC_2d5d6.dir\CMakeCXXCompilerABI.cpp.obj
+[2/2] Linking CXX executable cmTC_2d5d6.exe
 
 
 

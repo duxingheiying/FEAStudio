@@ -1,8 +1,0 @@
-# ninja log v5
-4	227	6766436608786269	FEAStudio_autogen/timestamp	941028f14919b214
-442	2121	6766219842722351	CMakeFiles/FEAStudio.dir/src/mainwindow.cpp.obj	f75ea029cc9dbcfa
-231	1713	6766436624776273	CMakeFiles/FEAStudio.dir/FEAStudio_autogen/mocs_compilation.cpp.obj	b39ed0fd616a08da
-445	2277	6766219844292341	CMakeFiles/FEAStudio.dir/src/main.cpp.obj	93797722e36f2e6a
-1714	2182	6766436628546275	FEAStudio.exe	d0a5adf9de3a19e5
-228	769	6766436615346286	CMakeFiles/FEAStudio.dir/src/File/STLFile.cpp.obj	7e73a8d942ffc7c3
-245	1655	6766222479593159	CMakeFiles/FEAStudio.dir/src/MainWindow.cpp.obj	fe79e1c40258a5d1
