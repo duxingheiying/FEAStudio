@@ -1,4 +1,4 @@
-include (${CMAKE_CURRENT_LIST_DIR}/File/CMakeLists.txt)
+include (${CMAKE_CURRENT_LIST_DIR}/File/CMakeLists.txt) # file cmake file
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
@@ -10,4 +10,4 @@ set(SOURCECODE ${CMAKE_CURRENT_LIST_DIR}/main.cpp
 
 add_executable(${PROJECT_NAME} ${SOURCECODE})
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets) # Qt dynamic library
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets stlfile_library) # Qt dynamic library
