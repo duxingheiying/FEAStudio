@@ -5,10 +5,20 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 #set(EXECUTABLE_OUTPUT_PATH path)
 
+set(CMAKE_AUTOMOC ON) # auto create moc file
+set(CMAKE_AUTORCC ON) # auto create rcc file
+set(CMAKE_AUTOUIC ON) # auto create uic file
+
+set(CMAKE_PREFIX_PATH D:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/)
+
+find_package(Qt5 COMPONENTS Widgets REQUIRED) # find qt library
+
 set(SOURCECODE ${CMAKE_CURRENT_LIST_DIR}/main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MainWindow.h
-    ${CMAKE_CURRENT_LIST_DIR}/MainWindow.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/MainWindow.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/appicon.rc
+    ${CMAKE_CURRENT_LIST_DIR}/mainresource.qrc)
 
 add_executable(${PROJECT_NAME} ${SOURCECODE})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets stlfile) # Qt dynamic library
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets stlfile) # add library
