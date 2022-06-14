@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include "OpenGLWidget/OpenGLWidget.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
