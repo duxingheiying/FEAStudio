@@ -1,6 +1,6 @@
 include_directories(openglwidget PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)
 
-find_package(Qt5 COMPONENTS Widgets OpenGLWidgets REQUIRED) # find qt library
+find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL REQUIRED) # find qt library
 
 set(CMAKE_DEBUG_POSTFIX "d")
 #set(CMAKE_RELEASE_POSTFIX "_r") 
@@ -14,4 +14,4 @@ add_library(openglwidget STATIC ${OPENGLWIDGET_SRC})
 
 target_include_directories(openglwidget PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(openglwidget PRIVATE Qt5::Widgets Qt5::OpenGLWidgets stlfile) # add library
+target_link_libraries(openglwidget PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::OpenGL stlfile) # add library

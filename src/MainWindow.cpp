@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     addActiontosToToolBar();
     addActionsToMenu();
     addMenusToMenuBar();
+    m_popenglWidget = new OpenGLWidget();
+    setCentralWidget(m_popenglWidget);
 }
 
 void MainWindow::createAction()

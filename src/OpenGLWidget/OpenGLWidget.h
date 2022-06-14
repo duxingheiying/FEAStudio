@@ -2,8 +2,6 @@
 #define OPENGLWIDGET_H
 
 #include <QtOpenGL/QtOpenGL>
-#include <QtOpenGL/QOpenGLWidget>
-#include <QtOpenGL/QOpenGLFunctions>
 
 class OpenGLWidget : public QOpenGLWidget, public QOpenGLFunctions
 {
