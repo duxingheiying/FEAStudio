@@ -1,4 +1,4 @@
-include (${CMAKE_CURRENT_LIST_DIR}/File/CMakeLists.txt) # file cmake file
+include (${CMAKE_CURRENT_LIST_DIR}/Files/CMakeLists.txt) # file cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/OpenGLWidget/CMakeLists.txt) # openglwidget cmake file
 
 include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)

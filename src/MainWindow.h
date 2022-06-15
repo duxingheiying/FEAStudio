@@ -7,7 +7,7 @@
 #include <QMenuBar>
 #include <QMenu>
 
-#include "File/STLFile.h"
+#include "Files/STLFile.h"
 
 class OpenGLWidget;
 
