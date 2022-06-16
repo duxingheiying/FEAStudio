@@ -11,6 +11,8 @@ include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)
 
 include(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
 
+link_directories(${CMAKE_CURRENT_LIST_DIR}/deps/freetype-2.10.1/objs/)
+
 # set control enbale or disable
 if(WIN32)
 set_target_properties( ${PROJECT_NAME}

@@ -11,7 +11,8 @@ set(CMAKE_AUTOMOC ON) # auto create moc file
 set(CMAKE_AUTORCC ON) # auto create rcc file
 set(CMAKE_AUTOUIC ON) # auto create uic file
 
-set(CMAKE_PREFIX_PATH D:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/)
+set(CMAKE_PREFIX_PATH D:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/
+E:/project/FEAStudio/deps/freetype-2.10.1/objs/)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED) # find qt library
 
