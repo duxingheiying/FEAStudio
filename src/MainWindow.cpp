@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include "OpenGLWidget/OpenGLWidget.h"
+#include "OpenGLWidget/GLWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -11,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     addActiontosToToolBar();
     addActionsToMenu();
     addMenusToMenuBar();
-    m_popenglWidget = new OpenGLWidget();
+    m_popenglWidget = new GLWidget(this);
     setCentralWidget(m_popenglWidget);
 }
 

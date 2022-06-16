@@ -15,7 +15,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <QtOpenGL>
+#include <QtOpenGL/QtOpenGL>
 #include <QOpenGLWidget>
 #include <QOpenGLShader>
 #include <QOpenGLFunctions>

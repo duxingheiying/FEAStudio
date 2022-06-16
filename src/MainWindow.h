@@ -10,6 +10,7 @@
 #include "Files/STLFile.h"
 
 class OpenGLWidget;
+class GLWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -120,6 +121,6 @@ private:
 	QAction* m_pAboutAction{ nullptr };
 	QAction* m_pExitAction{ nullptr };
 
-	OpenGLWidget* m_popenglWidget{ nullptr };
+	GLWidget* m_popenglWidget{ nullptr };
 };
 #endif // MAINWINDOW_H
