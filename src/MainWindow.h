@@ -1,126 +1,268 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QToolBar>
-#include <QAction>
-#include <QMenuBar>
-#include <QMenu>
+#include <QtConcurrent>
+#include <QFuture>
 
-#include "Files/STLFile.h"
+class GraphicMdiSubWin;
+class TableMdiSubWin;
+class CurveMdiSubWin;
 
-class OpenGLWidget;
+class QAction;
 class GLWidget;
+class MessageDockWidget;
+class TreeDockWidget;
+class PropertyDockWidget;
+class QMdiArea;
 
-class MainWindow : public QMainWindow
+class AnalysisFile;
+class BDFFile;
+class CBDFile;
+class TxtFile;
+class STLFile;
+
+namespace Ui {
+class MainWindow;
+}
+
+class   MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    virtual ~MainWindow();
+    virtual ~MainWindow() override;
+
+protected:
+    void closeEvent(QCloseEvent*event_) override; // close the mainwindow
 
 private:
-	void createAction();  // create actions
-	void createMenu();  // create menus
-	void createToolbars();
-	void addActiontosToToolBar();  // add actions to bar
-	void addActionsToMenu();  // add actions to menu
-	void addMenusToMenuBar();  // add menu to bar
+    void createMenuBar();
+    void createAction();  // create actions
+    void createMenu();  // create menus
+    void createToolbars();
+    void addActiontosToToolBar();  // add actions to bar
+    void addActionsToMenu();  // add actions to menu
+    void addMenusToMenuBar();  // add menu to bar
+    void setAsGraphicWind(); // set Graphic window as the current wind
+    void setAsTableWind(); // set Table window as the current wind
+    void setAsCurveWind(); // set Curve window as the current wind
+    void CreateNewGraphicWindow(); // create new graphic Window
+    void CreateNewTableWindow(); // create new Table Window
+    void CreateNewCurveWindow(); // create new Curve Window
+
+public:
 
 private:
-	// toolbars
-	QToolBar* m_pMainToolBar;
-	QToolBar* m_pViewToolBar;
+    QMenuBar* m_pMenuBar{ nullptr };
 
-	// file
-	QMenu* m_pFileMenu{ nullptr }; // file menue
-	QAction* m_pOpenFileAction{ nullptr };  // open file action
-	QAction* m_pSaveFileAction{ nullptr };
-	QAction* m_pSAveAsFileAction{ nullptr };
-	QAction* m_pSetWorkSpaceAction{ nullptr };
-	QAction* m_pImputApdlModelFileAction{ nullptr };
-	QAction* m_pImputFeamModelFileAction{ nullptr };
-	QAction* m_pImputTestModelFileAction{ nullptr };
-	QAction* m_pOutputWordReportAction{ nullptr };
+    // toolbars
+    QToolBar* m_pMainToolBar{ nullptr };
+    QToolBar* m_pViewToolBar;
 
-	// edit
-	QMenu* m_pEditMenu{ nullptr }; // edit menu
-	QAction* m_pCopyDataAction{ nullptr };
-	QAction* m_pCutDataAction{ nullptr };
-	QAction* m_pPastDataAction{ nullptr };
-	QAction* m_pDeleteDataAction{ nullptr };
-	QAction* m_pSelectAllAction{ nullptr };
-	QAction* m_pUnselectAction{ nullptr };
+    // file
+    QMenu *m_pFileMenu; // file menue
+    QAction *m_pOpenFileAction;  // open file action
+    QAction *m_pSaveFileAction;
+    QAction *m_pSAveAsFileAction;
+    QAction *m_pSetWorkSpaceAction;
+    QAction *m_pImputApdlModelFileAction;
+    QAction *m_pImputFeamModelFileAction;
+    QAction *m_pImputTestModelFileAction;
+    QAction *m_pOutputWordReportAction;
 
-	// view
-	QMenu* m_pViewMenu{ nullptr }; // view menu
-	QAction* m_pShowDataTreeAction{ nullptr };
-	QAction* m_pShowCommonAction{ nullptr };
-	QAction* m_pShowMeshAction{ nullptr };
-	QAction* m_pTransparencyAction{ nullptr };
-	QAction* m_pShowPointAction{ nullptr };
-	QAction* m_pShowPointNameAction{ nullptr };
-	QAction* m_pShowDOFAction{ nullptr };
-	QAction* m_pLeftViewAction{ nullptr };
-	QAction* m_pRightViewAction{ nullptr };
-	QAction* m_pButtonViewAction{ nullptr };
-	QAction* m_pTopViewAction{ nullptr };
-	QAction* m_pFrondViewAction{ nullptr };
-	QAction* m_pBackViewAction{ nullptr };
-	QAction* m_pIOSViewAction{ nullptr };
-	QAction* m_pSelectFromAction{ nullptr };
-	QAction* m_pSetToSelfAction{ nullptr };
+    // edit
+    QMenu *m_pEditMenu; // edit menu
+    QAction *m_pCopyDataAction;
+    QAction *m_pCutDataAction;
+    QAction *m_pPastDataAction;
+    QAction *m_pDeleteDataAction;
+    QAction *m_pSelectAllAction;
+    QAction *m_pUnselectAction;
 
-	// process
-	QMenu* m_pProcessMenu{ nullptr };  // process menu
-	QAction* m_pStaticsAnalysisAction{ nullptr };
-	QAction* m_pMeshConvergenceAction{ nullptr };
-	QAction* m_pCorrelationAnalysisAction{ nullptr };
+    // view
+    QMenu *m_pViewMenu; // view menu
+    QAction *m_pShowDataTreeAction;
+    QAction *m_pShowCommonAction;
+    QAction *m_pShowMeshAction;
+    QAction *m_pTransparencyAction;
+    QAction *m_pShowPointAction;
+    QAction *m_pShowPointNameAction;
+    QAction *m_pShowDOFAction;
+    QAction *m_pLeftViewAction;
+    QAction *m_pRightViewAction;
+    QAction *m_pButtonViewAction;
+    QAction *m_pTopViewAction;
+    QAction *m_pFrondViewAction;
+    QAction *m_pBackViewAction;
+    QAction *m_pIOSViewAction;
+    QAction *m_pSelectFromAction;
+    QAction *m_pSetToSelfAction;
 
-	QMenu* m_pProgramSetMenu{ nullptr };
-	QAction* m_pSetProgramAction{ nullptr };
-	QAction* m_pSetTargetAction{ nullptr };
-	QAction* m_pAnalysisProgramAction{ nullptr };
-	QAction* m_pModelUpdatingAction{ nullptr };
+    // process
+    QMenu *m_pProcessMenu;  // process menu
+    QAction *m_pStaticsAnalysisAction;
+    QAction *m_pMeshConvergenceAction;
+    QAction *m_pCorrelationAnalysisAction;
 
-	// tools
-	QMenu* m_pToolMenu{ nullptr };
-	QAction* m_pScreenShortAction{ nullptr };
+    QMenu *m_pProgramSetMenu;
+    QAction *m_pSetProgramAction;
+    QAction *m_pSetTargetAction;
+    QAction *m_pAnalysisProgramAction;
+    QAction *m_pModelUpdatingAction;
 
-	// windows
-	QMenu* m_pWindMenu{ nullptr };
-	QAction* m_pShowWindowsAsTabsAction{ nullptr };
-	QAction* m_pShowWindowsAsVerticalAction{ nullptr };
-	QAction* m_pShowWindowsAsHorizontalAction{ nullptr };
-	QAction* m_pShowWindowsAsStackAcion{ nullptr };
+    // tools
+    QMenu *m_pToolMenu;
+    QAction *m_pScreenShortAction;
 
-	// setup
-	QMenu* m_pSetUpMenu{ nullptr };
-	QAction* m_pSetSolverPathAction{ nullptr };
-	QAction* m_pSetSeverAction{ nullptr };
-	QAction* m_pSetBaseAction{ nullptr };
-	QAction* m_pSetShortcutAction{ nullptr };
+    // windows
+    QMenu *m_pWindMenu;
+    QAction *m_pShowWindowsAsTabsAction;
+    QAction *m_pShowWindowsAsVerticalAction;
+    QAction *m_pShowWindowsAsHorizontalAction;
+    QAction *m_pShowWindowsAsStackAcion;
 
-	// about
-	QMenu* m_pAboutMenu{ nullptr };
+    // setup
+    QMenu *m_pSetUpMenu;
+    QAction *m_pSetSolverPathAction;
+    QAction *m_pSetSeverAction;
+    QAction *m_pSetBaseAction;
+    QAction *m_pSetShortcutAction;
 
-	// second floor menu
-	QMenu* m_pHelpManualMenu{ nullptr };
+    // about
+    QMenu *m_pAboutMenu;
 
-	// second floot actions
-	QAction* m_pInstallManualAction{ nullptr };
-	QAction* m_pTrainManualAction{ nullptr };
-	QAction* m_pTheoryAction{ nullptr };
-	QAction* m_pUserAction{ nullptr };
+    // second floor menu
+    QMenu *m_pHelpManualMenu;
 
-	// top actions
-	QAction* m_pLicenseAction{ nullptr };
-	QAction* m_pLearningOnlineAction{ nullptr };
-	QAction* m_pConnectAction{ nullptr };
-	QAction* m_pAboutAction{ nullptr };
-	QAction* m_pExitAction{ nullptr };
+    // second floot actions
+    QAction *m_pInstallManualAction;
+    QAction *m_pTrainManualAction;
+    QAction *m_pTheoryAction;
+    QAction *m_pUserAction;
 
-	GLWidget* m_popenglWidget{ nullptr };
+    // top actions
+    QAction *m_pLicenseAction;
+    QAction *m_pLearningOnlineAction;
+    QAction *m_pConnectAction;
+    QAction *m_pAboutAction;
+    QAction* m_pExitAction;
+
+    // widget
+    QMainWindow* m_pCenterMainWindow;
+    QMdiArea* m_MdiAreaWidget;
+
+    GraphicMdiSubWin* m_pCurrentGraphicWind;
+    TableMdiSubWin* m_pCurrentTableWind;
+    CurveMdiSubWin* m_pCurrentCurveWind;
+
+    MessageDockWidget* m_pMSDockWidget;  // message box widet
+    TreeDockWidget* m_pTreeDockWidget;  // data tree widget
+    PropertyDockWidget* m_pPropertyDockWidget;  // property widget
+
+    // analisys files
+    AnalysisFile* m_pBdfFile{nullptr};
+    AnalysisFile* m_pCbdFile{nullptr};
+    TxtFile* m_pTxtFile{nullptr};
+    STLFile* m_pSTLFile{nullptr};
+
+    QThread* m_pReadBDFThread{nullptr};
+    QThread* m_pReadCBDThread{nullptr};
+    QThread* m_pReadTxtThread{nullptr};
+    QThread* m_pReadSTLThread{nullptr};
+
+    GLWidget* m_pGL;
+
+private slots:
+    void openFile();
+//    void showPointSwitch();
+//    void showLineSwith();
+//    void showMeshSwitch();
+//    void showFaceSwitch();
+//    void switchTransparency();
+
+//    void OpenFile();
+    void SaveFile();
+    void SaveAsFile();
+    void SetWorkSpace();
+    void ImputApdlModelFile();
+    void ImputFeamModelFile();
+    void ImputTestModelFile();
+    void OutputWordReport();
+
+    void CopyData();
+    void CutData();
+    void PastData();
+    void DeleteData();
+    void SelectAll();
+    void Unselect();
+
+    void ShowDataTree();
+    void ShowCommon();
+    void ShowMesh();
+    void Transparency();
+    void ShowPoint();
+    void ShowPointName();
+    void ShowDOF();
+    void LeftView();
+    void RightView();
+    void ButtonView();
+    void TopView();
+    void FrondView();
+    void BackView();
+
+    void StaticsAnalysis();
+    void MeshConvergence();
+    void CorrelationAnalysis();
+    void SetProgram();
+    void SetTarget();
+    void AnalysisProgram();
+    void ModelUpdating();
+
+    void ScreenShort();
+
+    void ShowWindowsAsTabs();
+    void ShowWindowsAsVertical();
+    void ShowWindowsAsHorizontal();
+    void ShowWindowsAsStack();
+
+    void SetSolverPath();
+    void SetSever();
+    void SetBase();
+    void SetShortCutAction();
+
+    void InstallManual();
+    void TrainManual();
+    void TheoryManual();
+    void UserManual();
+    void LicenseInformation();
+    void LearningOnline();
+    void ConnectionUs();
+    void AboutUs();
+
+    // show as a current window
+    void showGraphicWidget();
+    void showTableWidget();
+    void showCarveWidget();
+    void newGraphicMdiSubWin();
+    void newTableMdiSubWin();
+    void newCurveMdiSubWin();
+
+signals:
+    void startReadBDF(const QString&);
+    void startReadCDB(const QString&);
+    void startReadTXT(const QString&);
+    void startReadSTL(const QString&);
+
+public slots:
+    void updateBDFToOpenGL();
+    void updateTxtToOpenGL();
+    void updateSTLToOpenGL();
+    void createShowVectors();
+
+private:
+    Ui::MainWindow *ui;
 };
+
 #endif // MAINWINDOW_H

@@ -108,8 +108,8 @@ void GLWidget::initializeGL()
      * that, the black line will appear on the quad face. I don't find the reason
      *  now! sover the text.
      * ****************************************************************************/
-//    glEnable(GL_BLEND);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    glBlendColor(0.0f,0.5f, 0.7f, 1.0f);
 //    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    glBlendEquation(GL_FUNC_ADD);

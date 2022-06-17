@@ -13,7 +13,8 @@ set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/OpenGLWidget/)
 
 file(GLOB_RECURSE OPENGLWIDGET_SRC 
 ${CMAKE_CURRENT_LIST_DIR}/*.h 
-${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+${CMAKE_CURRENT_LIST_DIR}/*.cpp
+${CMAKE_CURRENT_LIST_DIR}/*.qrc)
 
 add_library(openglwidget STATIC ${OPENGLWIDGET_SRC})
 
@@ -24,7 +25,7 @@ Qt5::Core
 Qt5::Gui 
 Qt5::Widgets 
 Qt5::OpenGL 
-opengl32 
+opengl32
 glu32 
-freetype
-stlfile) # add library
+${CMAKE_CURRENT_LIST_DIR}/../../deps/freetype-2.10.1/objs/freetype.lib
+fileanalysis) # add library
