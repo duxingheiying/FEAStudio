@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include "OpenGLWidget/OpenGLWidget.h"
 #include "OpenGLWidget/GLWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)

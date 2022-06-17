@@ -33,3 +33,4 @@
 .vs/
 out/
 src/*.aps
+CMakeSettings.json

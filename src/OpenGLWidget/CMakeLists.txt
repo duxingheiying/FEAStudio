@@ -2,7 +2,7 @@ include_directories(openglwidget PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)
 include_directories(openglwidget PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../deps/glm/glm)
 include_directories(openglwidget PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../deps/freetype-2.10.1/include)
 
-set(LINK_DIR ${CMAKE_CURRENT_DIR}/../../deps/freetype-2.10.1/objs/)
+set(LINK_DIR ${CMAKE_CURRENT_LIST_DIR}/../../deps/freetype-2.10.1/objs/)
 link_directories(LINK_DIR)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL REQUIRED) # find qt library
