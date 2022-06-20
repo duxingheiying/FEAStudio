@@ -26,7 +26,8 @@
 #include <QKeyEvent>
 #include <QFileInfo>
 #include <QDir>
-#include <GL/gl.h>
+#include <gl/GL.h>
+#include <gl/GLU.h>
 #include <QOpenGLFunctions_4_5_Core>
 
 #include "ArcBall.h"
@@ -92,14 +93,14 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void wheelEvent(QWheelEvent *event) override;
-
-private:
     virtual void initializeGL() override;
-    virtual void initializeProgram();
-    virtual void initializeOIT();
     virtual void resizeGL(const GLint width, const GLint height) override;
     virtual void paintGL() override;
 
+private:
+    virtual void initializeProgram();
+    virtual void initializeOIT();
+    
     // OverLoad the funtion
     inline GLuint CreateProgram(const GLchar* vertexPath, const GLchar* fragmentPath);
     inline GLuint CreateProgram(const QString vertexPath, const QString fragmentPath);

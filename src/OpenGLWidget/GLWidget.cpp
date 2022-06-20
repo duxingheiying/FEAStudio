@@ -1,6 +1,5 @@
 ﻿#include "GLWidget.h"
 #include <iostream>
-#include <GL/glu.h>
 
 // all the cast
 // reinterpret_cast
@@ -87,9 +86,9 @@ void GLWidget::initializeGL()
     glClearColor( 0.2f, 0.3f, 0.3f, 0.0f);
     glShadeModel(GL_SMOOTH);
 //    glEnable( GL_DEPTH_TEST );
-    glDisable( GL_DEPTH_TEST );
+    //glDisable( GL_DEPTH_TEST );
 //    glDepthMask(GL_FALSE);   // set depbuffur only read
-    glDepthFunc(GL_LESS);
+    //glDepthFunc(GL_LESS);
 //    glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
 //    glEnable(GL_POINT_SMOOTH);
 //    glEnable(GL_LINE_SMOOTH);
@@ -108,12 +107,12 @@ void GLWidget::initializeGL()
      * that, the black line will appear on the quad face. I don't find the reason
      *  now! sover the text.
      * ****************************************************************************/
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    glBlendColor(0.0f,0.5f, 0.7f, 1.0f);
 //    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    glBlendEquation(GL_FUNC_ADD);
-//    glDisable(GL_DEPTH_TEST);   // if you use GL_BLEND you need to disable Depth test
+    //glDisable(GL_DEPTH_TEST);   // if you use GL_BLEND you need to disable Depth test
 
     initializeProgram();
     initialTextTexture();
@@ -279,6 +278,8 @@ void GLWidget::Display()
     m_pFunction->glDisable(GL_DEPTH_TEST);
     m_pFunction->glDisable(GL_CULL_FACE);
 
+    //glDisable(GL_BLEND);
+
     // Reset atomic counter
     m_pFunction->glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomic_counter_buffer);
     data = static_cast<GLuint *>(m_pFunction->glMapBuffer(GL_ATOMIC_COUNTER_BUFFER, GL_WRITE_ONLY));
@@ -322,10 +323,10 @@ void GLWidget::Display()
     TriangleDrawCall();
 
     // draw OIT face
-    m_pFunction->glDisable(GL_BLEND);
     m_pFunction->glBindVertexArray(quad_vao);
     m_pFunction->glUseProgram(resolve_program);
     m_pFunction->glDrawArrays(GL_QUADS, 0, 4);
+    m_pFunction->glDisable(GL_BLEND);
 
     // disbin the buffer
     m_pFunction->glBindVertexArray(0);
@@ -359,9 +360,9 @@ bool GLWidget::initializeContralMatrix()
         // translate Word coords to pixels
         m_fProportionality = static_cast<GLfloat>(m_nGLWWidth) / m_fRange;
         m_dHWPropotion = double(m_nGLHeight) / double(m_nGLWWidth);
-        m_qProjectMatrix.ortho(-m_fRange/2,                              m_fRange/2,
-                               -m_fRange/2 * GLfloat ( m_dHWPropotion ), m_fRange/2 * GLfloat (m_dHWPropotion),
-                               -m_fRange/2 * 100.0f,                     m_fRange/2 * 100.0f);
+        m_qProjectMatrix.ortho(-m_fRange/2.0,                              m_fRange/2.0,
+                               -m_fRange/2.0 * GLfloat ( m_dHWPropotion ), m_fRange/2.0 * GLfloat (m_dHWPropotion),
+                               -m_fRange/2.0 * 100.0f,                     m_fRange/2.0 * 100.0f);
     }
     calculateBackGroundData();
     calculateReferenceTapData();
@@ -2028,7 +2029,8 @@ void GLWidget::paintGL()
         Display();
     } else {
         // draw the backGround
-        glDisable(GL_DEPTH_TEST);
+        //glDisable(GL_BLEND);
+        //glDisable(GL_DEPTH_TEST);
         DrawBackGround();
         glPointSize(10);
         DrawReferenceTap();
@@ -2059,7 +2061,7 @@ void GLWidget::paintGL()
             m_pFunction->glReadPixels(0, 0, m_nGLWWidth, m_nGLHeight, GL_DEPTH_COMPONENT, GL_FLOAT, m_pDepthBuffer);
         }
     }
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
 //    RenderText(m_uiTextsShader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
     RenderText(m_uiTextsShader, "FEMStudio Version 1.0.0.0", 25.0f, 25.0f, 0.25f, glm::vec3(0.5, 0.8f, 0.2f));
 }

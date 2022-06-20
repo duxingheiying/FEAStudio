@@ -13,6 +13,11 @@ include(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
 
 link_directories(${CMAKE_CURRENT_LIST_DIR}/deps/freetype-2.10.1/objs/)
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/fonts
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+#install(DIRECTORY fonts/ DESTINATION fonts)
+
 # set control enbale or disable
 if(WIN32)
 set_target_properties( ${PROJECT_NAME}

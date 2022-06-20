@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <QDebug>
 
 #include "parse_stl.h"
 
@@ -96,6 +97,8 @@ bool STLFile::ReadFile(const QString &FilePath_)
     m_vCenter.setX( ( _maxX + _minX ) / 2 );
     m_vCenter.setY( ( _maxY + _minY ) / 2 );
     m_vCenter.setZ( ( _maxZ + _minZ ) / 2 );
+
+    qDebug() << "_minX : " << _minX << " _max : " << _maxX << " _minY : " << _minY << " _maxY : " << _maxY << " _minZ : " << _minZ << " _maxZ : " << _maxZ;
 
     m_fRange = static_cast<float>(sqrt(std::pow(static_cast<double>(_maxX) - static_cast<double>(_minX), 2.0)+
                                        std::pow(static_cast<double>(_maxY) - static_cast<double>(_minY), 2.0)+
