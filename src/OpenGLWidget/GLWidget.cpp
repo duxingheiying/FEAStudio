@@ -33,7 +33,7 @@ GLWidget::GLWidget(QWidget *parent) :
     m_bShowPoint = false;
     m_bShowLine  = false;
     m_bShowFace  = true;
-    m_bShowMesh  = true;
+    m_bShowMesh  = false;
     m_bTransparency = false;
     m_pDepthBuffer = nullptr;
     m_fOffset = 0.5f;
@@ -83,35 +83,35 @@ void GLWidget::initializeGL()
 
     // Clear the colorbuffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor( 0.2f, 0.3f, 0.3f, 0.0f);
+    glClearColor( 0.0f, 0.0f, 0.0f, 1.0f);
     glShadeModel(GL_SMOOTH);
-//    glEnable( GL_DEPTH_TEST );
+    //glEnable( GL_DEPTH_TEST );
     //glDisable( GL_DEPTH_TEST );
-//    glDepthMask(GL_FALSE);   // set depbuffur only read
+    //glDepthMask(GL_FALSE);   // set depbuffur only read
     //glDepthFunc(GL_LESS);
-//    glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
-//    glEnable(GL_POINT_SMOOTH);
-//    glEnable(GL_LINE_SMOOTH);
-//    glEnable(GL_POLYGON_SMOOTH);
+    //glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+    //glEnable(GL_POINT_SMOOTH);
+    //glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_POLYGON_SMOOTH);
 
-//    glDisable(GL_LIGHTING);
-//    glEnable(GL_COLOR_MATERIAL);
-//    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,
-//                  GL_SEPARATE_SPECULAR_COLOR);
-//    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-//    glFrontFace( GL_CCW );
-//    glEnable( GL_CULL_FACE );  // cut of the  back face
+ //   glDisable(GL_LIGHTING);
+ //   glEnable(GL_COLOR_MATERIAL);
+ //   glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,
+ //                 GL_SEPARATE_SPECULAR_COLOR);
+ //   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+ //   glFrontFace( GL_CCW );
+ //   glEnable( GL_CULL_FACE );  // cut of the  back face
+	//glDisable(GL_CULL_FACE);
 
     /* ****************************************************************************
      * GL_BLEND and GL_POLYGON_SMOOTH don't be used at the same time, if you do
      * that, the black line will appear on the quad face. I don't find the reason
      *  now! sover the text.
      * ****************************************************************************/
-    //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glBlendColor(0.0f,0.5f, 0.7f, 1.0f);
-//    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glBlendEquation(GL_FUNC_ADD);
+    //glBlendColor(0.0f,0.5f, 0.7f, 1.0f);
+    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendEquation(GL_FUNC_ADD);
     //glDisable(GL_DEPTH_TEST);   // if you use GL_BLEND you need to disable Depth test
 
     initializeProgram();
@@ -274,11 +274,12 @@ void GLWidget::initializeOIT()
 
 void GLWidget::Display()
 {
-    GLuint * data;
-    m_pFunction->glDisable(GL_DEPTH_TEST);
-    m_pFunction->glDisable(GL_CULL_FACE);
+    GLuint* data{nullptr};
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
 
-    //glDisable(GL_BLEND);
+    // set program
+    m_pFunction->glUseProgram(render_scene_prog);
 
     // Reset atomic counter
     m_pFunction->glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomic_counter_buffer);
@@ -298,9 +299,6 @@ void GLWidget::Display()
 
     // Bind linked-list buffer for write
     m_pFunction->glBindImageTexture(1, linked_list_texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32UI);
-
-    // set program
-    m_pFunction->glUseProgram(render_scene_prog);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -323,11 +321,11 @@ void GLWidget::Display()
     TriangleDrawCall();
 
     // draw OIT face
+    m_pFunction->glDisable(GL_BLEND);
     m_pFunction->glBindVertexArray(quad_vao);
     m_pFunction->glUseProgram(resolve_program);
     m_pFunction->glDrawArrays(GL_QUADS, 0, 4);
-    m_pFunction->glDisable(GL_BLEND);
-
+    
     // disbin the buffer
     m_pFunction->glBindVertexArray(0);
     m_pFunction->glUseProgram(0);
@@ -480,7 +478,7 @@ void GLWidget::resizeGL(GLint width, GLint height)
         m_pDepthBuffer = nullptr;
     }
     if (width * height > 0) {
-        m_pDepthBuffer = new GLfloat[width * height];
+        m_pDepthBuffer = new GLfloat[width * height]();
     }
 
     // rebuild the vertext
@@ -784,7 +782,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
             // gen all the back ground VBO
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uReferenceTapVBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vReferenceTapeVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vReferenceTapeVertexs.size() * static_cast<int64_t>(sizeof(GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vReferenceTapeVertexs[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -792,7 +790,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
         // gen all the back ground VBO
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uReferenceTapVBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vReferenceTapeVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vReferenceTapeVertexs.size() * static_cast<int64_t>(sizeof(GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vReferenceTapeVertexs[0]), GL_STATIC_DRAW);
     }
 
@@ -804,7 +802,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
             // gen all the back ground CBO
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uReferenceTapCBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vReferenceTapeColors.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vReferenceTapeColors.size() * static_cast<int64_t>(sizeof(GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vReferenceTapeColors[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -812,7 +810,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
         // gen all the back ground CBO
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uReferenceTapCBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vReferenceTapeColors.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vReferenceTapeColors.size() * static_cast<int64_t>(sizeof(GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vReferenceTapeColors[0]), GL_STATIC_DRAW);
     }
 
@@ -824,7 +822,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
             // gen all the background NBO
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uReferenceTapNBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vReferenceTapeNormal.size() * static_cast<int>(sizeof(GLfloat)) ,
+                                      m_vReferenceTapeNormal.size() * static_cast<int64_t>(sizeof(GLfloat)) ,
                                       reinterpret_cast<GLfloat*>(&m_vReferenceTapeNormal[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -832,7 +830,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
         // gen all the background NBO
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uReferenceTapNBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vReferenceTapeNormal.size() * static_cast<int>(sizeof(GLfloat)) ,
+                                  m_vReferenceTapeNormal.size() * static_cast<int64_t>(sizeof(GLfloat)) ,
                                   reinterpret_cast<GLfloat*>(&m_vReferenceTapeNormal[0]), GL_STATIC_DRAW);
     }
 
@@ -845,7 +843,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
             // gen all the background EBO
             m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uReferenceTapEBO);
             m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                      m_vReferenceTapeIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                      m_vReferenceTapeIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                       reinterpret_cast<GLuint*>(&m_vReferenceTapeIndex[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -854,7 +852,7 @@ bool GLWidget::updateReferenceTapData(const bool&& updateVAO_ ,
         // gen all the background EBO
         m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uReferenceTapEBO);
         m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                  m_vReferenceTapeIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                  m_vReferenceTapeIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                   reinterpret_cast<GLuint*>(&m_vReferenceTapeIndex[0]), GL_STATIC_DRAW);
     }
 
@@ -997,7 +995,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
             // gen all the back ground VBO
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uBackGroundVBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vBackFaceVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vBackFaceVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vBackFaceVertexs[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1005,7 +1003,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
         // gen all the back ground VBO
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uBackGroundVBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vBackFaceVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vBackFaceVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vBackFaceVertexs[0]), GL_STATIC_DRAW);
     }
 
@@ -1017,7 +1015,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
             // gen all the back ground CBO
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uBackGroundCBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vBackFaceColors.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vBackFaceColors.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vBackFaceColors[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1025,7 +1023,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
         // gen all the back ground CBO
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uBackGroundCBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vBackFaceColors.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vBackFaceColors.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vBackFaceColors[0]), GL_STATIC_DRAW);
     }
 
@@ -1037,7 +1035,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
             // gen all the background NBO
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uBackGroundNBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vBackFaceNormal.size() * static_cast<int>(sizeof(GLfloat)) ,
+                                      m_vBackFaceNormal.size() * static_cast<int64_t>(sizeof(GLfloat)) ,
                                       reinterpret_cast<GLfloat*>(&m_vBackFaceNormal[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1045,7 +1043,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
         // gen all the background NBO
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uBackGroundNBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vBackFaceNormal.size() * static_cast<int>(sizeof(GLfloat)) ,
+                                  m_vBackFaceNormal.size() * static_cast<int64_t>(sizeof(GLfloat)) ,
                                   reinterpret_cast<GLfloat*>(&m_vBackFaceNormal[0]), GL_STATIC_DRAW);
     }
 
@@ -1058,7 +1056,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
             // gen all the background EBO
             m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uBackGroundEBO);
             m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                      m_vBackFaceIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                      m_vBackFaceIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                       reinterpret_cast<GLuint*>(&m_vBackFaceIndex[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1067,7 +1065,7 @@ bool GLWidget::updateBackGroundBuffer(const bool&& updateVAO_ ,
         // gen all the background EBO
         m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uBackGroundEBO);
         m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                  m_vBackFaceIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                  m_vBackFaceIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                   reinterpret_cast<GLuint*>(&m_vBackFaceIndex[0]), GL_STATIC_DRAW);
     }
 
@@ -1110,7 +1108,7 @@ bool GLWidget::updateVertexsBuffer(const bool &&updateVAO_,
             // copy the ROM to the GPU buffur
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uVertexsVBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vVertexs[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1119,7 +1117,7 @@ bool GLWidget::updateVertexsBuffer(const bool &&updateVAO_,
         // copy the ROM to the GPU buffur
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uVertexsVBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vVertexs[0]), GL_STATIC_DRAW);
     }
 
@@ -1131,7 +1129,7 @@ bool GLWidget::updateVertexsBuffer(const bool &&updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uVertexsCBO);
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uVertexsCBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vVertexsColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vVertexsColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vVertexsColor[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1139,7 +1137,7 @@ bool GLWidget::updateVertexsBuffer(const bool &&updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uVertexsCBO);
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uVertexsCBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vVertexsColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vVertexsColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vVertexsColor[0]), GL_STATIC_DRAW);
     }
 
@@ -1151,7 +1149,7 @@ bool GLWidget::updateVertexsBuffer(const bool &&updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uVertexsEBO);
             m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVertexsEBO);
             m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                      m_vVertexsIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                      m_vVertexsIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                       reinterpret_cast<GLuint*>(&m_vVertexsIndex[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1159,7 +1157,7 @@ bool GLWidget::updateVertexsBuffer(const bool &&updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uVertexsEBO);
         m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVertexsEBO);
         m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                  m_vVertexsIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                  m_vVertexsIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                   reinterpret_cast<GLuint*>(&m_vVertexsIndex[0]), GL_STATIC_DRAW);
     }
     m_pFunction->glBindVertexArray(0);
@@ -1201,7 +1199,7 @@ bool GLWidget::updateLinesBuffer(const bool&& updateVAO_,
             // copy the ROM to the GPU buffur
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uLinesVBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vLineVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vLineVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vLineVertexs[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1210,7 +1208,7 @@ bool GLWidget::updateLinesBuffer(const bool&& updateVAO_,
         // copy the ROM to the GPU buffur
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uLinesVBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vLineVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vLineVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vLineVertexs[0]), GL_STATIC_DRAW);
     }
 
@@ -1222,7 +1220,7 @@ bool GLWidget::updateLinesBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uLinesCBO);
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uLinesCBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vLineColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vLineColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vLineColor[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1230,7 +1228,7 @@ bool GLWidget::updateLinesBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uLinesCBO);
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uLinesCBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vLineColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vLineColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vLineColor[0]), GL_STATIC_DRAW);
     }
     // delete all Vertexs EBO
@@ -1241,7 +1239,7 @@ bool GLWidget::updateLinesBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uLinesEBO);
             m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uLinesEBO);
             m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                      m_vLineIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                      m_vLineIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                       reinterpret_cast<GLuint*>(&m_vLineIndex[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1249,7 +1247,7 @@ bool GLWidget::updateLinesBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uLinesEBO);
         m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uLinesEBO);
         m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                  m_vLineIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                  m_vLineIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                   reinterpret_cast<GLuint*>(&m_vLineIndex[0]), GL_STATIC_DRAW);
     }
     m_pFunction->glBindVertexArray(0);
@@ -1262,10 +1260,10 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
                                      const bool&& updateNBO_,
                                      const bool&& updateEBO_)
 {
-    if ( m_vTrianglesVertexs.size() <= 0 ||
-         m_vTrianglesColor.size() <= 0 ||
-         m_vTrianglesNormal.size()<= 0 ||
-         m_vTriangleIndex.size()<= 0 ) {
+	if (m_vTrianglesVertexs.size() <= 0 ||
+		m_vTrianglesColor.size() <= 0 ||
+		m_vTrianglesNormal.size() <= 0 ||
+		m_vTriangleIndex.size() <= 0) {
         return false;
     }
     // delete all Quads  VAO
@@ -1291,7 +1289,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
             // copy the ROM to the GPU buffur
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uTrianglesVBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vTrianglesVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vTrianglesVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vTrianglesVertexs[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1300,7 +1298,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
         // copy the ROM to the GPU buffur
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uTrianglesVBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vTrianglesVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vTrianglesVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vTrianglesVertexs[0]), GL_STATIC_DRAW);
     }
 
@@ -1312,7 +1310,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uTrianglesCBO);
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uTrianglesCBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vTrianglesColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vTrianglesColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vTrianglesColor[0]), GL_STATIC_DRAW);
         }
 
@@ -1321,7 +1319,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uTrianglesCBO);
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uTrianglesCBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vTrianglesColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vTrianglesColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vTrianglesColor[0]), GL_STATIC_DRAW);
     }
 
@@ -1333,7 +1331,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uTrianglesNBO);
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uTrianglesNBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vTrianglesNormal.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vTrianglesNormal.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vTrianglesNormal[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1341,7 +1339,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uTrianglesNBO);
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uTrianglesNBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vTrianglesNormal.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vTrianglesNormal.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vTrianglesNormal[0]), GL_STATIC_DRAW);
     }
     // delete all Quads EBO
@@ -1352,7 +1350,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uTrianglesEBO);
             m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uTrianglesEBO);
             m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                      m_vTriangleIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                      m_vTriangleIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                       reinterpret_cast<GLuint*>(&m_vTriangleIndex[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1360,7 +1358,7 @@ bool GLWidget::updateTrianglesBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uTrianglesEBO);
         m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uTrianglesEBO);
         m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                  m_vTriangleIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                  m_vTriangleIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                   reinterpret_cast<GLuint*>(&m_vTriangleIndex[0]), GL_STATIC_DRAW);
     }
 
@@ -1404,7 +1402,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
             // copy the ROM to the GPU buffur
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uQuadsVBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vQuadsVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vQuadsVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vQuadsVertexs[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1413,7 +1411,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
         // copy the ROM to the GPU buffur
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uQuadsVBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vQuadsVertexs.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vQuadsVertexs.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vQuadsVertexs[0]), GL_STATIC_DRAW);
     }
 
@@ -1425,7 +1423,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uQuadsCBO);
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uQuadsCBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vQuadsColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vQuadsColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vQuadsColor[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1433,7 +1431,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uQuadsCBO);
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uQuadsCBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vQuadsColor.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vQuadsColor.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vQuadsColor[0]), GL_STATIC_DRAW);
     }
 
@@ -1445,7 +1443,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uQuadsNBO);
             m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uQuadsNBO);
             m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                      m_vQuadsNormal.size() * static_cast<int>(sizeof (GLfloat)),
+                                      m_vQuadsNormal.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                       reinterpret_cast<GLfloat*>(&m_vQuadsNormal[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1453,7 +1451,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uQuadsNBO);
         m_pFunction->glBindBuffer(GL_ARRAY_BUFFER, m_uQuadsNBO);
         m_pFunction->glBufferData(GL_ARRAY_BUFFER,
-                                  m_vQuadsNormal.size() * static_cast<int>(sizeof (GLfloat)),
+                                  m_vQuadsNormal.size() * static_cast<int64_t>(sizeof (GLfloat)),
                                   reinterpret_cast<GLfloat*>(&m_vQuadsNormal[0]), GL_STATIC_DRAW);
     }
 
@@ -1465,7 +1463,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
             m_pFunction->glGenBuffers(1, &m_uQuadsEBO);
             m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uQuadsEBO);
             m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                      m_vQuadsIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                      m_vQuadsIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                       reinterpret_cast<GLuint*>(&m_vQuadsIndex[0]), GL_STATIC_DRAW);
         }
     } else {
@@ -1473,7 +1471,7 @@ bool GLWidget::updateQuadsBuffer(const bool&& updateVAO_,
         m_pFunction->glGenBuffers(1, &m_uQuadsEBO);
         m_pFunction->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uQuadsEBO);
         m_pFunction->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                  m_vQuadsIndex.size() * static_cast<int>(sizeof(GLuint)) ,
+                                  m_vQuadsIndex.size() * static_cast<int64_t>(sizeof(GLuint)) ,
                                   reinterpret_cast<GLuint*>(&m_vQuadsIndex[0]), GL_STATIC_DRAW);
     }
 
@@ -2025,6 +2023,8 @@ void GLWidget::showFaceSwitch()
 
 void GLWidget::paintGL()
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     if ( m_bTransparency ) {
         Display();
     } else {
@@ -2057,11 +2057,11 @@ void GLWidget::paintGL()
         glDisable(GL_DEPTH_TEST);
         // draw text
         // read all the pixel
-        if(nullptr != m_pDepthBuffer) {
-            m_pFunction->glReadPixels(0, 0, m_nGLWWidth, m_nGLHeight, GL_DEPTH_COMPONENT, GL_FLOAT, m_pDepthBuffer);
-        }
+        //if(nullptr != m_pDepthBuffer) {
+        //    m_pFunction->glReadPixels(0, 0, m_nGLWWidth, m_nGLHeight, GL_DEPTH_COMPONENT, GL_FLOAT, m_pDepthBuffer);
+        //}
     }
-    //glEnable(GL_BLEND);
+    glEnable(GL_BLEND);
 //    RenderText(m_uiTextsShader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
     RenderText(m_uiTextsShader, "FEMStudio Version 1.0.0.0", 25.0f, 25.0f, 0.25f, glm::vec3(0.5, 0.8f, 0.2f));
 }
