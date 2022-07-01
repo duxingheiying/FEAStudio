@@ -13,8 +13,8 @@ in vec3 frag_position;
 in vec3 frag_normal;
 in vec4 surface_color;
 
-//uniform vec3 light_position = vec3(40.0, 20.0, 100.0);
-uniform vec3 light_position;
+uniform vec3 light_position = vec3(40.0, 20.0, 100.0);
+//uniform vec3 light_position;
 
 void main(void)
 {

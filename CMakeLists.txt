@@ -21,8 +21,8 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/fonts
 # set control enbale or disable
 if(WIN32)
 set_target_properties( ${PROJECT_NAME}
-    PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"  # show window without console in win32
-#               LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE" # show window with console in win32
+    PROPERTIES #LINK_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"  # show window without console in win32
+               LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE" # show window with console in win32
                LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
                LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
                LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"

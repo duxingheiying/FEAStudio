@@ -108,14 +108,14 @@ void GLWidget::initializeGL()
      * that, the black line will appear on the quad face. I don't find the reason
      *  now! sover the text.
      * ****************************************************************************/
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendColor(0.0f,0.5f, 0.7f, 1.0f);
     //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendEquation(GL_FUNC_ADD);
     //glDisable(GL_DEPTH_TEST);   // if you use GL_BLEND you need to disable Depth test
 
     initializeProgram();
-    initialTextTexture();
+    //initialTextTexture();
     initializeOIT();
     initializeContralMatrix();
 
@@ -278,6 +278,9 @@ void GLWidget::Display()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     // set program
     m_pFunction->glUseProgram(render_scene_prog);
 
@@ -285,8 +288,6 @@ void GLWidget::Display()
     m_pFunction->glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomic_counter_buffer);
     data = static_cast<GLuint *>(m_pFunction->glMapBuffer(GL_ATOMIC_COUNTER_BUFFER, GL_WRITE_ONLY));
     data[0] = 0;
-
-    m_pFunction->glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
 
     // Clear head-pointer image
     m_pFunction->glBindBuffer(GL_PIXEL_UNPACK_BUFFER, head_pointer_clear_buffer);
@@ -300,8 +301,7 @@ void GLWidget::Display()
     // Bind linked-list buffer for write
     m_pFunction->glBindImageTexture(1, linked_list_texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32UI);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    m_pFunction->glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
 
     // draw the background
     const QMatrix4x4 _BackMatrx;
@@ -309,6 +309,9 @@ void GLWidget::Display()
     glUniformMatrix4fv(render_scene_uniforms.view_matrix, 1, GL_FALSE, m_qViewMatrix.data());
     glUniformMatrix4fv(render_scene_uniforms.projection_matrix, 1, GL_FALSE, m_qProjectMatrix.data());
     glUniform3f(m_iRenderLightPosition, 30*m_fRange, 500*m_fRange, 1000*m_fRange);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     DrawBackGroundCall();
 
     // draw the element triangle and quad
@@ -484,7 +487,7 @@ void GLWidget::resizeGL(GLint width, GLint height)
     // rebuild the vertext
     calculateReferenceTapData(true, false, false, false);
     calculateBackGroundData(true, false, false, false);
-    update();
+    paintGL();
 }
 
 GLuint GLWidget::CreateProgram(const QString vertexPath, const QString fragmentPath)
@@ -2035,6 +2038,7 @@ void GLWidget::paintGL()
         glPointSize(10);
         DrawReferenceTap();
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
 
         // show point
         if (m_bShowPoint) {
@@ -2061,9 +2065,9 @@ void GLWidget::paintGL()
         //    m_pFunction->glReadPixels(0, 0, m_nGLWWidth, m_nGLHeight, GL_DEPTH_COMPONENT, GL_FLOAT, m_pDepthBuffer);
         //}
     }
-    glEnable(GL_BLEND);
-//    RenderText(m_uiTextsShader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-    RenderText(m_uiTextsShader, "FEMStudio Version 1.0.0.0", 25.0f, 25.0f, 0.25f, glm::vec3(0.5, 0.8f, 0.2f));
+//    glEnable(GL_BLEND);
+////    RenderText(m_uiTextsShader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+//    RenderText(m_uiTextsShader, "FEMStudio Version 1.0.0.0", 25.0f, 25.0f, 0.25f, glm::vec3(0.5, 0.8f, 0.2f));
 }
 
 // override the mouse event

@@ -40,8 +40,8 @@
 
 // Order Independent Transparency
 #include "vmath.h"
-#define MAX_FRAMEBUFFER_WIDTH 3840
-#define MAX_FRAMEBUFFER_HEIGHT 2160
+#define MAX_FRAMEBUFFER_WIDTH 2560
+#define MAX_FRAMEBUFFER_HEIGHT 1440
 
 using namespace vmath;
 

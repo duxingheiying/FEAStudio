@@ -55,8 +55,7 @@ void main(void)
 
     vec4 final_color = vec4(0.0);
 
-    for (i = 0; i < fragment_count; i++)
-    {
+    for (i = 0; i < fragment_count; i++) {
         vec4 modulator = unpackUnorm4x8(fragment_list[i].y);
         vec4 additive_component = unpackUnorm4x8(fragment_list[i].w);
         final_color = mix(final_color, modulator, modulator.a) + additive_component;
