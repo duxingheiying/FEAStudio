@@ -1,9 +1,11 @@
+set(CMAKE_PREFIX_PATH D:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/)
+
+
 include (${CMAKE_CURRENT_LIST_DIR}/fileanalysis/CMakeLists.txt) # file cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/OpenGLWidget/CMakeLists.txt) # openglwidget cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/geometry/CMakeLists.txt) # openglwidget cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/msghandle/CMakeLists.txt) # openglwidget cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/standarttools/CMakeLists.txt) # openglwidget cmake file
-
 
 include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)
 
@@ -15,7 +17,6 @@ set(CMAKE_AUTOMOC ON) # auto create moc file
 set(CMAKE_AUTORCC ON) # auto create rcc file
 set(CMAKE_AUTOUIC ON) # auto create uic file
 
-set(CMAKE_PREFIX_PATH D:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/)
 
 find_package(Qt5 COMPONENTS Widgets Concurrent REQUIRED) # find qt library
 
