@@ -1,6 +1,5 @@
 set(CMAKE_PREFIX_PATH D:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/)
 
-
 include (${CMAKE_CURRENT_LIST_DIR}/fileanalysis/CMakeLists.txt) # file cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/OpenGLWidget/CMakeLists.txt) # openglwidget cmake file
 include (${CMAKE_CURRENT_LIST_DIR}/geometry/CMakeLists.txt) # openglwidget cmake file
