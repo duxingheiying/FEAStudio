@@ -1,1 +1,0 @@
-E:\project\FEAStudio\deps\freetype-2.10.1\objs\x64\Debug Static\freetype.lib

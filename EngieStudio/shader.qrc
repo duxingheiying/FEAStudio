@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/Shader">
+        <file>Shader/BackgroundFrag.frag</file>
+        <file>Shader/BackgroundVertex.vsh</file>
+        <file>Shader/FacesFragShader.frag</file>
+        <file>Shader/FacesVertexShader.vsh</file>
+        <file>Shader/LinesFragShader.frag</file>
+        <file>Shader/LinesVertexShader.vsh</file>
+        <file>Shader/text.frag</file>
+        <file>Shader/text.vsh</file>
+        <file>Shader/VertexsFragShader.frag</file>
+        <file>Shader/VertexsVertexShader.vsh</file>
+        <file>Shader/lighting.frag</file>
+        <file>Shader/lighting.vsh</file>
+        <file>Shader/multilighting.frag</file>
+        <file>Shader/multilighting.vsh</file>
+    </qresource>
+</RCC>
