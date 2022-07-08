@@ -1854,6 +1854,8 @@ bool GLWidget::TriangleDrawCall()
 
     // disbin the buffer
     m_pFunction->glBindVertexArray(0);
+
+    return true;
 }
 
 bool GLWidget::DrawTrianglesLines()
@@ -1940,6 +1942,7 @@ bool GLWidget::QuadsDrawCall()
 
     // disbin the buffer
     m_pFunction->glBindVertexArray(0);
+    return true;
 }
 
 bool GLWidget::DrawQuadsLines()

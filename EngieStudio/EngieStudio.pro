@@ -100,11 +100,6 @@ HEADERS += \
 FORMS += \
     MainWindow.ui
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
 RESOURCES += \
     actions.qrc
 
@@ -140,4 +135,9 @@ win32{
    export(first.depends)
    export(resourcedata.commands)
    QMAKE_EXTRA_TARGETS += first resourcedata
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
 

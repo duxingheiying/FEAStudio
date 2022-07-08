@@ -20,7 +20,7 @@
 #include <windows.h>											// Header File For Windows
 #include <GL/gl.h>												// Header File For The OpenGL32 Library
 #include <GL/glu.h>												// Header File For The GLu32 Library
-#include <GL/glaux.h>											// Header File For The GLaux Library
+//#include <GL/glaux.h>											// Header File For The GLaux Library
 
 #include "math.h"                                               // Needed for sqrtf
 #include "ArcBall.h"                                            // ArcBall header

@@ -18,8 +18,9 @@
 /*************************************************************/
 
 #ifndef ArcBall_h
-#define ARcBall_h
+#define ArcBall_h
 
+#include <Windows.h>
 #include <GL/gl.h>
 #include <math.h>
 #include <stdio.h>

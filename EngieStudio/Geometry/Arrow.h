@@ -3,6 +3,7 @@
 
 #include <QColor>
 
+#include <Windows.h>
 #include "Vector3D.h"
 #include "GL/gl.h"
 
